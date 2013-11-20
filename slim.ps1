@@ -1,6 +1,13 @@
 ##########################
 # PowerSlim (Revision 47)#
 ##########################
+[CmdletBinding()]
+Param(
+  [Parameter(Mandatory=$False)]
+  [int]$port,
+  [Parameter(Mandatory=$False)]
+  [string]$remoterunner
+)
 $slimver = "Slim -- V0.3`n"
 $slimnull = "000004:null:"
 #$slimvoid = "/__VOID__/"
@@ -500,15 +507,22 @@ function Run-RemoteServer($ps_server){
   }
 }
 
-if (!$args.Length) { 
-  Write-Output "No arguments provided!"
-  return; 
+function Start-DebugSession
+{    
+    $vsdebugger = "c:\Windows\System32\vsjitdebugger.exe"
+    $arguments = "-p " + $PID
+    start-process $vsdebugger $arguments –PassThru -Wait
 }
 
-$ps_server = New-Object System.Net.Sockets.TcpListener($args[0])
+if ($PSBoundParameters.ContainsKey("Debug"))
+{ 
+    Start-DebugSession
+}
+
+$ps_server = New-Object System.Net.Sockets.TcpListener($port)
 $ps_server.Start()
 
-if(!$args[1]){
+if(!$remoterunner){
   . .\client.ps1
   Run-SlimServer $ps_server
 }
