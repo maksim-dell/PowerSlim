@@ -3,7 +3,7 @@
 ##########################
 [CmdletBinding()]
 Param(
-  [Parameter(Mandatory=$False)]
+  [Parameter(Mandatory=$True)]
   [int]$port,
   [Parameter(Mandatory=$False)]
   [string]$remoterunner
@@ -508,10 +508,16 @@ function Run-RemoteServer($ps_server){
 }
 
 function Start-DebugSession
-{    
-    $vsdebugger = "c:\Windows\System32\vsjitdebugger.exe"
-    $arguments = "-p " + $PID
-    start-process $vsdebugger $arguments –PassThru -Wait
+{
+    $VSDebugger = "c:\Windows\System32\vsjitdebugger.exe"
+    if (Test-Path $VSDebugger)
+    {
+        Start-Process $VSDebugger ("-p " + $PID) -Wait
+    }
+    else 
+    {
+        Write-Output "Visual Studio Debugger is not found. Make sure Visual Studio is installed."
+    }
 }
 
 if ($PSBoundParameters.ContainsKey("Debug"))
