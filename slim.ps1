@@ -424,7 +424,7 @@ function process_table() {
 
 function process_message($ps_stream){
 
-  if( ! $ps_stream.CanRead ){ return "buy" }
+  if( ! $ps_stream.CanRead ){ return "bye" }
 
   Write-Verbose "Started processing message."
 
@@ -433,7 +433,7 @@ function process_message($ps_stream){
 
   $ps_msg
 
-  if ($error) { return "buy" }
+  if ($error) { return "bye" }
 
   if( !(ischunk $ps_msg) ){ return }
 
